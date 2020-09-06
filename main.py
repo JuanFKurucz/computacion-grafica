@@ -1,110 +1,137 @@
+import random
+
 import pygame
 from pygame.locals import *
 
 from OpenGL.GL import *
 import numpy
 
+main_colors = [
+    1,1,1,
+    1,0,0,
+    1,1,0,
+    0,1,1,
+    0,0,1,
+    0.5,0.5,0.5,
+    0,0.5,0.5,
+    0,0,0.5,
+    0.5,0,0,
+    0.5,0.5,0
+]
+index_color = -1
+
+def return_color():
+    global index_color
+    index_color+=1
+    return main_colors[index_color % len(main_colors)]
+
+class Object:
+    def __init__(self):
+        self.name=""
+        self.vertexes = []
+        self.poligons = []
+        self.colors = []
+
+    def addVertex(self,x,y,z):
+        self.vertexes.append(float(x))
+        self.vertexes.append(float(y))
+        self.vertexes.append(float(z))
+    
+    def addPoligon(self,x,y,z):
+        self.poligons.append(int(x)-1)
+        self.colors.append(return_color())
+        self.poligons.append(int(y)-1)
+        self.colors.append(return_color())
+        self.poligons.append(int(z)-1)
+        self.colors.append(return_color())
+
+
+def loadObj(file):
+    obj_file = open(file, 'r')
+    lines = obj_file.readlines()
+    
+    obj = Object()
+
+    for line in lines: 
+        trimmed_line = line.strip()
+        line_info = line.split(" ")
+        if line.startswith("o"):
+            obj.name=line_info[1]
+        if line.startswith("v") or line.startswith("f"):
+            try:
+                x = line_info[1]
+            except IndexError:
+                x = 0
+            try:
+                y = line_info[2]
+            except IndexError:
+                y = 0
+            try:
+                z = line_info[3]
+            except IndexError:
+                z = 0
+            if line.startswith("v"):
+                obj.addVertex(x,y,z)
+            else:
+                obj.addPoligon(x,y,z)
+    return obj
+                
+
+
 def main():
-        pygame.init()
-        cw = 800
-        ch = 600
-        display = (cw,ch)
-        pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
+    pygame.init()
+    cw = 800
+    ch = 600
+    display = (cw, ch)
+    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
-        print glGetString(GL_VERSION)
+    print(glGetString(GL_VERSION))
 
-        glMatrixMode(GL_PROJECTION)
-	glLoadIdentity()
-	glViewport(0, 0, cw, ch)
-	glFrustum(-1, 1, -1, 1, 1, 1000)
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    glViewport(0, 0, cw, ch)
+    glFrustum(-1, 1, -1, 1, 1, 1000)
 
-        angle = 0
+    ang = 0.0
+    vel = 0.0
+    box = loadObj("assets/box.obj")
+    change_wire_mode = False
+    change_cull_face = True
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    if change_wire_mode:
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+                    else:
+                        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+                    change_wire_mode = not change_wire_mode
+                elif event.key == pygame.K_c:
+                    change_cull_face = not change_cull_face
 
-        color = (255,128,60)
-        plano = glGenLists(1)
-        glNewList(plano, GL_COMPILE)
-        glBegin(GL_TRIANGLES)
-        glColor3ubv(color)
-        glVertex3f(-1, 1, 0)
-        glVertex3f( 1, 1, 0)
-        glVertex3f(1, -1, 0)
 
-
-        glColor3ub(255,0,255)
-        glVertex3f(-1, -1, 0)
-        glVertex3f( 1, -1, 0)
-        glVertex3f(-1, 1, 0)
-        glEnd()
-        glEndList()
-
-        verts = [-1,1,0,
-                 1,1,0,
-                 1,-1,0,
-                 -1,-1,0,
-                 1,-1,0,
-                 -1,1,0]
-        vertsList = [-1,1,0,
-                     1,1,0,
-                     1,-1,0,
-                     -1,-1,0]
-        verts = numpy.array(vertsList)
-
-        indexs = [0,1,2,
-                  3,2,0]
-
-        colors = [255,0,0,
-                  255,0,0,
-                  255,0,0,
-                  0,255,0,
-                  0,255,0,
-                  0,255,0]
-        colors = numpy.array(colors)
-
-        wire = False
-
+        if change_cull_face:
+            glEnable(GL_CULL_FACE)
+        else:
+            glDisable(GL_CULL_FACE)
         
-        while True:
-                for event in pygame.event.get():
-                        if event.type == pygame.QUIT:
-                                pygame.quit()
-                                quit()
-                        if event.type == pygame.KEYDOWN:
-                                if event.key == pygame.K_ESCAPE:
-                                        pygame.quit()
-                                        quit()
-                                elif event.key == pygame.K_m:
-                                        if not wire:
-                                                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-                                        else:
-                                                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-                                        wire = not wire
-                
-                glMatrixMode(GL_MODELVIEW)
-	        glLoadIdentity()
+        glClear(GL_COLOR_BUFFER_BIT)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+        glTranslatef(0,0,-2)
+        glEnableClientState(GL_VERTEX_ARRAY)
+        glEnableClientState(GL_COLOR_ARRAY)
+        glVertexPointer(3, GL_FLOAT, 0, box.vertexes)
+        glColorPointer(3, GL_FLOAT, 0, box.colors)
 
-                glTranslatef(0,0,-2)
-                glRotatef(angle, 0,1,0)
-                glRotatef(angle, 1,0,0)
-                glRotatef(angle, 0,0,1)
-                glScalef(0.5,0.5,0.5)
+        glDrawElements(GL_TRIANGLES, len(box.poligons), GL_UNSIGNED_INT, box.poligons)
 
-                angle += 1
+        glDisableClientState(GL_VERTEX_ARRAY)
+        glDisableClientState(GL_COLOR_ARRAY)
+        pygame.display.flip()
 
-                glClear(GL_COLOR_BUFFER_BIT)
-
-                glEnableClientState(GL_VERTEX_ARRAY)
-                glVertexPointer(3, GL_FLOAT, 0, verts)
-
-                glEnableClientState(GL_COLOR_ARRAY)
-                glColorPointer(3, GL_UNSIGNED_BYTE, 0, colors)
-
-                #glDrawArrays(GL_TRIANGLES, 0, 6)
-                glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indexs)
-
-                glDisableClientState(GL_VERTEX_ARRAY)
-                glDisableClientState(GL_COLOR_ARRAY)
-
-                pygame.display.flip()
-                
 
 main()
