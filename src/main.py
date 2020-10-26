@@ -53,37 +53,7 @@ def changeAng():
     luz+=addVal/1000
 
 
-def dibujar_triangulos(vertices, normales, texturas, textura):
-
-    if (len(vertices) > 0):
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glVertexPointer(3, GL_FLOAT, 0, vertices)
-
-    if (len(normales) > 0):
-        glEnableClientState(GL_NORMAL_ARRAY)
-        glNormalPointer(GL_FLOAT, 0, normales)
-
-    if (len(texturas) > 0):
-        # Habilito el array de coordenadas de textura
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-        glTexCoordPointer(2, GL_FLOAT, 0, texturas)
-        # Cargo la textura en la posicion activa
-        glBindTexture(GL_TEXTURE_2D, textura)
-
-    glDrawArrays(GL_TRIANGLES, 0, int(len(vertices)/3))
-
-    if (len(vertices) > 0):
-        glDisableClientState(GL_VERTEX_ARRAY)
-
-    if (len(normales) > 0):
-        glDisableClientState(GL_NORMAL_ARRAY)
-
-    if (len(texturas) > 0):
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY)
-        # luego de dibujar, desactivo la textura
-        glBindTexture(GL_TEXTURE_2D, 0)
-
-def init(ancho, largo,gouraud):
+def init(ancho, largo):
     #Activo el manejo de texturas
     glEnable(GL_TEXTURE_2D)
     #Activo la textura 0 (hay 8 disponibles)
@@ -111,64 +81,8 @@ def init(ancho, largo,gouraud):
     glViewport(0,0,ancho,largo)
     glFrustum(-1,1,-1,1,1,1000)
 
-    #glUseProgram(gouraud)
-
-
-
-#Uso esta funcion para compilar de forma individual el codigo de cada componente del shader (vertex y fragment)
-#Le paso el path al archivo y el tipo de shader (GL_VERTEX_SHADER o GL_FRAGMENT_SHADER)
-def compileProgram(path, type):
-    #Leo el codigo fuente desde el archivo
-    sourceFile = open(path, "r")
-    source = sourceFile.read()
-    #Creo un shader vacio en memoria de video, del tipo indicado
-    #En la variable shader queda almacenado un indice que nos va a permitir identificar este shader de ahora en mas
-    shader = glCreateShader(type)
-    #Le adjunto el codigo fuente leido desde el archivo
-    glShaderSource(shader, source)
-    #Intento compilarlo
-    glCompileShader(shader)
-    #Con la funcion glGelShaderiv puedo obtener el estado del compilador de shaders
-    #En este caso le pido el stado de la ultima compilacion ejecutada
-    if glGetShaderiv(shader, GL_COMPILE_STATUS) != GL_TRUE:
-        #Si la compilacion falla, muestro el error y retorno 0 (shader nulo)
-        print(path + ': ' + glGetShaderInfoLog(shader))
-        #Me aseguro de liberar los recursos que reserve en memoria de vide, ya que no los voy a usar
-        glDeleteShader(shader)
-        return 0
-    else:
-        return shader
-
 
     
-#Esta funcion me permite crear un programa de shading completo, basado en un vertex y un fragment shader
-#Le paso el path a ambos codigos fuentes
-def createShader(vSource, fSource):
-    #Creo y compilo el vertex shader
-    vProgram = compileProgram(vSource, GL_VERTEX_SHADER)
-    #Creo y compilo el fragment shader
-    fProgram = compileProgram(fSource, GL_FRAGMENT_SHADER)
-    #Creo un programa de shading vacio en memoria de video
-    shader = glCreateProgram()
-    #Le adjunto el codigo objeto del vertex shader compilado
-    glAttachShader(shader, vProgram)
-    #Le adjunto el codigo objeto del fragment shader compilado
-    glAttachShader(shader, fProgram)
-    #Intento linkear el programa para generar un ejecutable en memoria de video
-    glLinkProgram(shader)
-    #Chequeo si la ejecucion del linkeo del programa fue exitosa
-    if glGetProgramiv(shader, GL_LINK_STATUS) != GL_TRUE:
-        #Si falla, imprimo el mensaje de error y libero los recursos
-        print(glGetProgramInfoLog(shader))
-        glDeleteProgram(shader)
-        return 0
-    #Una vez que el programa fue linkeado, haya sido exitoso o no, ya no necesito los shaders
-    #individuales compilados, asi que libero sus recursos
-    glDeleteShader(vProgram)
-    glDeleteShader(fProgram)
-
-    return shader
-        
 def main():
     global ang
     global addVal
@@ -181,11 +95,9 @@ def main():
     box = Object.loadObj("./assets/knight_texturas.obj")
     text = loadTexture("./assets/knight.png")
     
-    gouraud = createShader("./assets/shaders/gouraud_vs.hlsl",
-                           "./assets/shaders/gouraud_fs.hlsl")
     box.attachTexture(text)
 
-    init(cw,ch,gouraud)
+    init(cw,ch)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -223,8 +135,6 @@ def main():
 
         pygame.display.flip()
 
-        
-    #glDeleteProgram(gouraud)
     glDeleteTextures([text])
     pygame.quit()
     quit()
