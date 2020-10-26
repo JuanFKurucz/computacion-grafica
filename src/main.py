@@ -126,11 +126,7 @@ def main():
 
         changeAng()
         glRotatef(ang, 0, 0, 1)
-
-        #Si estoy usando shaders, le digo que la textura es la que esta activa en la posicion 0 (de las 8 disponibles)
-        #glUniform1i(box.uniftexture, 0)
         
-
         box.draw()
 
         pygame.display.flip()
