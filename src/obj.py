@@ -1,3 +1,5 @@
+from OpenGL.GL import *
+
 class Object:
     def __init__(self):
         self.name = ""
@@ -9,6 +11,7 @@ class Object:
         self.textures = []
         self.poligons = []
 
+        self.texture = None
         self.addValues = {
             "v": self._vertexes,
             "vn": self._normals,
@@ -62,3 +65,31 @@ class Object:
                 obj.vertexes.append(v)
         return obj
 
+    def attachTexture(self,text):
+        self.texture = text
+
+    def draw(self):
+        if self.vertexes:
+            glEnableClientState(GL_VERTEX_ARRAY)
+            glVertexPointer(3, GL_FLOAT, 0, self.vertexes)
+
+        if self.normals:
+            glEnableClientState(GL_NORMAL_ARRAY)
+            glNormalPointer(GL_FLOAT, 0, self.normals)
+        
+        if self.textures:
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+            glTexCoordPointer(2, GL_FLOAT, 0, self.textures)
+            glBindTexture(GL_TEXTURE_2D, self.texture)
+        
+        glDrawArrays(GL_TRIANGLES, 0, len(self.poligons))
+
+        if self.vertexes:
+            glDisableClientState(GL_VERTEX_ARRAY)
+
+        if self.normals:
+            glDisableClientState(GL_NORMAL_ARRAY)
+
+        if self.textures:
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY)
+            glBindTexture(GL_TEXTURE_2D, 0)
