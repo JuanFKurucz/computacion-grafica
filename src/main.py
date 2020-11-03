@@ -5,6 +5,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GL.shaders import *
 from obj import *
+from model import Model
 
 # Uso esta funcion para compilar de forma individual el codigo de cada componente del shader (vertex y fragment)
 # Le paso el path al archivo y el tipo de shader (GL_VERTEX_SHADER o GL_FRAGMENT_SHADER)
@@ -99,7 +100,8 @@ def main():
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
-    model = Object.loadObj("./assets/knight/knight_stand_0.obj")
+    model = Model()
+    model.loadAnimations()  # Object.loadObj("./assets/knight/knight_stand_0.obj")
 
     # Creo un programa de shading y guardo la referencia en la variable gouraud
     gouraud = createShader("./assets/shaders/gouraud_vs.hlsl", "./assets/shaders/gouraud_fs.hlsl")
@@ -113,6 +115,7 @@ def main():
 
     # Para el shader, me guardo una referencia a la variable que representa a la textura
     unifTextura = glGetUniformLocation(gouraud, "textura")
+    model.attachTexture(text)
 
     glMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE, [1, 1, 1, 1])
     glMaterial(GL_FRONT_AND_BACK, GL_AMBIENT, [1, 1, 1, 1])
@@ -189,30 +192,7 @@ def main():
         ang += 0.5
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glEnableClientState(GL_NORMAL_ARRAY)
-        # Habilito el array de coordenadas de textura
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
-
-        glVertexPointer(3, GL_FLOAT, 0, model.vertexes)
-        glNormalPointer(GL_FLOAT, 0, model.normals)
-        # Paso la lista de coordenadas de textura para cada vertice
-        glTexCoordPointer(2, GL_FLOAT, 0, model.textures)
-
-        if light:
-            # Si estoy usando shaders, le digo que la textura es la que esta activa en la posicion 0 (de las 8 disponibles)
-            glUniform1i(unifTextura, 0)
-        # Cargo la textura "text" en la posicion activa (que es la 0 en este ejemplo)
-        glBindTexture(GL_TEXTURE_2D, text)
-
-        glDrawArrays(GL_TRIANGLES, 0, len(model.poligons))
-
-        # Luego de dibujar, desactivo la textura
-        glBindTexture(GL_TEXTURE_2D, 0)
-
-        glDisableClientState(GL_VERTEX_ARRAY)
-        glDisableClientState(GL_NORMAL_ARRAY)
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY)
+        model.draw()
 
         pygame.display.flip()
 
