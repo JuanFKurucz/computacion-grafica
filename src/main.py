@@ -65,7 +65,7 @@ def loadTexture(path):
     surf = pygame.image.load(path)
     # Obtengo la matriz de colores de la imagen en forma de un array binario
     # Le indico el formato en que quiero almacenar los datos (RGBA) y que invierta la matriz, para poder usarla correctamente con OpenGL
-    image = pygame.image.tostring(surf, "RGBA", 1)
+    image = pygame.image.tostring(surf, "RGBA", 0)
     # Obentego las dimensiones de la imagen
     ix, iy = surf.get_rect().size
     # Creo una textura vacia en memoria de video, y me quedo con el identificador (texid) para poder referenciarla
@@ -99,7 +99,7 @@ def main():
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
-    model = Object.loadObj("./assets/knight_texturas.obj")
+    model = Object.loadObj("./assets/knight/knight_stand_0.obj")
 
     # Creo un programa de shading y guardo la referencia en la variable gouraud
     gouraud = createShader("./assets/shaders/gouraud_vs.hlsl", "./assets/shaders/gouraud_fs.hlsl")
@@ -109,7 +109,7 @@ def main():
     # Activo la textura 0 (hay 8 disponibles)
     glActiveTexture(GL_TEXTURE0)
     # Llamo a la funcion que levanta la textura a memoria de video
-    text = loadTexture("./assets/knight.png")
+    text = loadTexture("./assets/knight/knight.png")
 
     # Para el shader, me guardo una referencia a la variable que representa a la textura
     unifTextura = glGetUniformLocation(gouraud, "textura")
