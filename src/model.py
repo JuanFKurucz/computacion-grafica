@@ -13,22 +13,26 @@ class Model:
         self.texture_path = texture_path
         self.assets_folder = assets_folder
         self.animations_prefix = animations_prefix
+        self.default_animation = None
 
     def addAnimation(self, animation_type, animation):
         self.animations[animation_type] = animation
 
     def loadAnimations(self):
         for prefix in self.animations_prefix:
-            animation = Animation(10)
+            animation = Animation(self.animations_prefix[prefix]["frames"])
             animation.loadAnimations(self.assets_folder, prefix)
             self.addAnimation(prefix, animation)
 
     def load(self, default_animation):
+        self.default_animation = default_animation
         self.loadAnimations()
         self.loadTexture(f"{self.assets_folder}/{self.texture_path}")
-        self.current_animation = self.animations[default_animation]
+        self.current_animation = self.animations[self.default_animation]
 
-    def changeAnimation(self, animation_type):
+    def changeAnimation(self, animation_type=None):
+        if not animation_type:
+            animation_type = self.default_animation
         self.current_animation = self.animations[animation_type]
         self.current_animation.start_time = time()
 

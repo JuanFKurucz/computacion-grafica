@@ -7,6 +7,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GL.shaders import *
 from model import Model
+from objects.player import Player
 
 # Uso esta funcion para compilar de forma individual el codigo de cada componente del shader (vertex y fragment)
 # Le paso el path al archivo y el tipo de shader (GL_VERTEX_SHADER o GL_FRAGMENT_SHADER)
@@ -63,17 +64,24 @@ def createShader(vSource, fSource):
 
 
 def loadModels():
-    models = []
+    models = {}
     with open("utils/config.json") as json_file:
         data = json.load(json_file)
         for model_info in data["models"]:
-            model = Model(
-                data["models"][model_info]["assets"],
-                data["models"][model_info]["animations"],
-                data["models"][model_info]["texture"],
-            )
+            if model_info == "knight":
+                model = Player(
+                    data["models"][model_info]["assets"],
+                    data["models"][model_info]["animations"],
+                    data["models"][model_info]["texture"],
+                )
+            else:
+                model = Model(
+                    data["models"][model_info]["assets"],
+                    data["models"][model_info]["animations"],
+                    data["models"][model_info]["texture"],
+                )
             model.load(data["models"][model_info]["default_animation"])
-            models.append(model)
+            models[model_info] = model
     return models
 
 
@@ -124,6 +132,10 @@ def main():
             if event.type == pygame.QUIT:
                 end = True
             elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_SPACE:
+                    models["knight"].jump()
+                if event.key == pygame.K_LCTRL:
+                    models["knight"].crouch()
                 if event.key == pygame.K_m:
                     if mode == GL_LINE:
                         mode = GL_FILL
@@ -171,13 +183,13 @@ def main():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         for model in models:
-            model.draw()
+            models[model].draw()
 
         pygame.display.flip()
 
     # Cuando salgo del loop, antes de cerrar el programa libero todos los recursos creados
     glDeleteProgram(gouraud)
-    glDeleteTextures([model.texture for model in models])
+    glDeleteTextures([models[model].texture for model in models])
     pygame.quit()
     quit()
 
