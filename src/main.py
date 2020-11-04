@@ -100,8 +100,12 @@ def main():
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
-    model = Model()
-    model.loadAnimations()  # Object.loadObj("./assets/knight/knight_stand_0.obj")
+    models = [
+        Model("assets/knight", "knight_stand_"),
+        Model("assets/floor", "floor_"),
+    ]
+    for model in models:
+        model.load()
 
     # Creo un programa de shading y guardo la referencia en la variable gouraud
     gouraud = createShader("./assets/shaders/gouraud_vs.hlsl", "./assets/shaders/gouraud_fs.hlsl")
@@ -112,10 +116,12 @@ def main():
     glActiveTexture(GL_TEXTURE0)
     # Llamo a la funcion que levanta la textura a memoria de video
     text = loadTexture("./assets/knight/knight.png")
+    text_floor = loadTexture("./assets/floor/floor.jpg")
 
     # Para el shader, me guardo una referencia a la variable que representa a la textura
     unifTextura = glGetUniformLocation(gouraud, "textura")
-    model.attachTexture(text)
+    models[0].attachTexture(text)
+    models[1].attachTexture(text_floor)
 
     glMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE, [1, 1, 1, 1])
     glMaterial(GL_FRONT_AND_BACK, GL_AMBIENT, [1, 1, 1, 1])
@@ -185,14 +191,15 @@ def main():
 
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        glTranslatef(0.0, 0.0, -50)
+        glTranslatef(0.0, 0.0, -75)
         glRotatef(ang, 0, 1, 0)
         glRotatef(ang, 0, 0, 1)
         glRotatef(ang, 1, 0, 0)
         ang += 0.5
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        model.draw()
+        for model in models:
+            model.draw()
 
         pygame.display.flip()
 

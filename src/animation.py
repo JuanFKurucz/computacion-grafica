@@ -12,6 +12,8 @@ class Animation:
 
     def loadAnimation(self, file):
         file_index = file.split(".")[-2].split("_")[-1]
+        if not file_index:
+            file_index = "0"
         self.objs[file_index] = Object.loadObj(file)
 
     def loadAnimations(self, dir, prefix):

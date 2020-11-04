@@ -4,19 +4,24 @@ from animation import Animation
 
 
 class Model:
-    def __init__(self):
+    def __init__(self, assets_folder, prefix=""):
         self.animations = {}
         self.current_animation = None
         self.texture = None
+        self.assets_folder = assets_folder
+        self.prefix = prefix
 
     def addAnimation(self, animation_type, animation):
         self.animations[animation_type] = animation
 
     def loadAnimations(self):
         idle = Animation(10)
-        idle.loadAnimations("assets/knight", "knight_stand_")
+        idle.loadAnimations(self.assets_folder, self.prefix)
         self.addAnimation("idle", idle)
         self.current_animation = self.animations["idle"]
+
+    def load(self):
+        self.loadAnimations()
 
     def changeAnimation(self, animation_type):
         self.current_animation = self.animations[animation_type]
