@@ -159,13 +159,15 @@ def main():
                 elif event.key == pygame.K_ESCAPE:
                     end = True
 
+        mouse_movement = pygame.mouse.get_rel()
+        ang += 0.5 * mouse_movement[0]
+
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        glTranslatef(0.0, 0.0, -75)
-        glRotatef(ang, 0, 1, 0)
+        glTranslatef(0, -20, -75)
+        glRotatef(-45, 0, 1, 0)
+        glRotatef(-90, 1, 0, 0)
         glRotatef(ang, 0, 0, 1)
-        glRotatef(ang, 1, 0, 0)
-        ang += 0.5
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         for model in models:
