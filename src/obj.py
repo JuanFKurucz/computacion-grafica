@@ -16,16 +16,16 @@ class Object:
             "f": self.poligons,
         }
 
-    def addPoligon(self, x, y, z):
+    def add_poligon(self, x, y, z):
         self.poligons.append(x)
         self.poligons.append(y)
         self.poligons.append(z)
 
-    def addElement(self, element, cords):
+    def add_element(self, element, cords):
         self.addValues[element].append(cords)
 
     @staticmethod
-    def loadObj(file):
+    def load_obj(file):
         obj_file = open(file, "r")
         lines = obj_file.readlines()
 
@@ -41,12 +41,12 @@ class Object:
                 for i in range(1, len(line_info)):
                     if line_info[i]:
                         coords.append(float(line_info[i]))
-                obj.addElement(line_info[0], coords)
+                obj.add_element(line_info[0], coords)
             elif line_info[0] == "f":
                 x = [int(n) - 1 for n in line_info[1].split("/")]
                 y = [int(n) - 1 for n in line_info[2].split("/")]
                 z = [int(n) - 1 for n in line_info[3].split("/")]
-                obj.addPoligon(x, y, z)
+                obj.add_poligon(x, y, z)
 
         for pair in obj.poligons:
             vert = pair[0]

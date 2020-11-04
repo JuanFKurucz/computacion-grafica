@@ -10,14 +10,15 @@ class Animation:
         self.objs = {}
         self.start_time = 0
 
-    def loadAnimation(self, file):
+    def load_animation(self, file):
         file_index = file.split(".")[-2].split("_")[-1]
-        self.objs[file_index] = Object.loadObj(file)
+        self.objs[file_index] = Object.load_obj(file)
 
-    def loadAnimations(self, dir, prefix):
+    def load_animations(self, dir, prefix):
         for name in glob.glob(f"{dir}/*{prefix}*.obj"):
-            self.loadAnimation(name)
+            self.load_animation(name)
 
-    def getCurrentObj(self):
+    @property
+    def current_obj(self):
         self.current_frame = int((time() - self.start_time) * self.frames % len(self.objs))
         return self.objs[str(self.current_frame)]

@@ -10,16 +10,16 @@ class Player(Model):
 
     def jump(self):
         if not self.jumping:
-            self.changeAnimation("jump")
+            self.change_animation("jump")
         else:
-            self.changeAnimation()
+            self.change_animation()
         self.jumping = not self.jumping
 
     def crouch(self):
         if not self.crouching:
-            self.changeAnimation("crouch_stand")
+            self.change_animation("crouch_stand")
         else:
-            self.changeAnimation()
+            self.change_animation()
 
         self.crouching = not self.crouching
 

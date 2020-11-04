@@ -15,29 +15,29 @@ class Model:
         self.animations_prefix = animations_prefix
         self.default_animation = None
 
-    def addAnimation(self, animation_type, animation):
+    def add_animation(self, animation_type, animation):
         self.animations[animation_type] = animation
 
-    def loadAnimations(self):
+    def load_animations(self):
         for prefix in self.animations_prefix:
             animation = Animation(self.animations_prefix[prefix]["frames"])
-            animation.loadAnimations(self.assets_folder, prefix)
-            self.addAnimation(prefix, animation)
+            animation.load_animations(self.assets_folder, prefix)
+            self.add_animation(prefix, animation)
 
     def load(self, default_animation):
         self.default_animation = default_animation
-        self.loadAnimations()
-        self.loadTexture(f"{self.assets_folder}/{self.texture_path}")
+        self.load_animations()
+        self.load_texture(f"{self.assets_folder}/{self.texture_path}")
         self.current_animation = self.animations[self.default_animation]
 
-    def changeAnimation(self, animation_type=None):
+    def change_animation(self, animation_type=None):
         if not animation_type:
             animation_type = self.default_animation
         self.current_animation = self.animations[animation_type]
         self.current_animation.start_time = time()
 
     def draw(self, light=False):
-        current_obj = self.current_animation.getCurrentObj()
+        current_obj = self.current_animation.current_obj
 
         if current_obj.vertexes:
             glEnableClientState(GL_VERTEX_ARRAY)
@@ -68,7 +68,7 @@ class Model:
             glDisableClientState(GL_TEXTURE_COORD_ARRAY)
             glBindTexture(GL_TEXTURE_2D, 0)
 
-    def loadTexture(self, path):
+    def load_texture(self, path):
         # Cargo la imagen a memoria. pygame se hace cargo de decodificarla correctamente
         surf = pygame.image.load(path)
         # Obtengo la matriz de colores de la imagen en forma de un array binario
