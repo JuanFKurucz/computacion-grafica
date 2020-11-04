@@ -7,25 +7,26 @@ from animation import Animation
 
 
 class Model:
-    def __init__(self, assets_folder, prefix, texture_path):
+    def __init__(self, assets_folder, animations_prefix, texture_path):
         self.animations = {}
         self.current_animation = None
         self.texture_path = texture_path
         self.assets_folder = assets_folder
-        self.prefix = prefix
+        self.animations_prefix = animations_prefix
 
     def addAnimation(self, animation_type, animation):
         self.animations[animation_type] = animation
 
     def loadAnimations(self):
-        idle = Animation(10)
-        idle.loadAnimations(self.assets_folder, self.prefix)
-        self.addAnimation("idle", idle)
-        self.current_animation = self.animations["idle"]
+        for prefix in self.animations_prefix:
+            animation = Animation(10)
+            animation.loadAnimations(self.assets_folder, prefix)
+            self.addAnimation(prefix, animation)
 
-    def load(self):
+    def load(self, default_animation):
         self.loadAnimations()
-        self.loadTexture(self.texture_path)
+        self.loadTexture(f"{self.assets_folder}/{self.texture_path}")
+        self.current_animation = self.animations[default_animation]
 
     def changeAnimation(self, animation_type):
         self.current_animation = self.animations[animation_type]

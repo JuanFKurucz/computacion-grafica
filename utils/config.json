@@ -1,0 +1,34 @@
+{
+  "models": {
+    "knight": {
+      "assets": "assets/knight",
+      "texture": "knight.png",
+      "animations": [
+        "attack",
+        "crouch_attack",
+        "crouch_pain",
+        "crouch_stand",
+        "crouch_walk",
+        "death_fallback",
+        "death_fallbackslow",
+        "death_fallforward",
+        "fallback",
+        "flip",
+        "jump",
+        "pain",
+        "point",
+        "run",
+        "salute",
+        "stand",
+        "wave"
+      ],
+      "default_animation": "stand"
+    },
+    "floor": {
+      "assets": "assets/floor",
+      "texture": "floor.jpg",
+      "animations": ["floor"],
+      "default_animation": "floor"
+    }
+  }
+}

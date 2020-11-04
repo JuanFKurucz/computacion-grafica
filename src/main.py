@@ -1,3 +1,5 @@
+import json
+
 import pygame
 from pygame.locals import *
 
@@ -60,17 +62,27 @@ def createShader(vSource, fSource):
     return shader
 
 
+def loadModels():
+    models = []
+    with open("utils/config.json") as json_file:
+        data = json.load(json_file)
+        for model_info in data["models"]:
+            model = Model(
+                data["models"][model_info]["assets"],
+                data["models"][model_info]["animations"],
+                data["models"][model_info]["texture"],
+            )
+            model.load(data["models"][model_info]["default_animation"])
+            models.append(model)
+    return models
+
+
 def main():
     pygame.init()
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
-    models = [
-        Model("assets/knight", "knight_stand_", "./assets/knight/knight.png"),
-        Model("assets/floor", "floor_", "./assets/floor/floor.jpg"),
-    ]
-    for model in models:
-        model.load()
+    models = loadModels()
 
     # Creo un programa de shading y guardo la referencia en la variable gouraud
     gouraud = createShader("./assets/shaders/gouraud_vs.hlsl", "./assets/shaders/gouraud_fs.hlsl")
