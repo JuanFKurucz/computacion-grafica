@@ -14,12 +14,12 @@
         "death_fallforward": { "frames": 10 },
         "fallback": { "frames": 10 },
         "flip": { "frames": 10 },
-        "jump": { "frames": 12 },
+        "jump": { "frames": 9 },
         "pain": { "frames": 10 },
         "point": { "frames": 10 },
-        "run": { "frames": 10 },
+        "run": { "frames": 12 },
         "salute": { "frames": 10 },
-        "stand": { "frames": 10 },
+        "stand": { "frames": 11 },
         "wave": { "frames": 10 }
       },
       "default_animation": "stand"

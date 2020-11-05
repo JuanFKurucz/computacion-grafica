@@ -48,15 +48,35 @@ def main():
     light = False
     end = False
 
+    models["knight"].rotation = -200
     while not end:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 end = True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_w:
+                    models["knight"].add_move("front")
+                if event.key == pygame.K_s:
+                    models["knight"].add_move("back")
+                if event.key == pygame.K_a:
+                    models["knight"].add_move("left")
+                if event.key == pygame.K_d:
+                    models["knight"].add_move("right")
             elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_w:
+                    models["knight"].remove_move("front")
+                if event.key == pygame.K_s:
+                    models["knight"].remove_move("back")
+                if event.key == pygame.K_a:
+                    models["knight"].remove_move("left")
+                if event.key == pygame.K_d:
+                    models["knight"].remove_move("right")
+
                 if event.key == pygame.K_SPACE:
                     models["knight"].jump()
                 if event.key == pygame.K_LCTRL:
                     models["knight"].crouch()
+
                 if event.key == pygame.K_m:
                     if mode == GL_LINE:
                         mode = GL_FILL
@@ -94,17 +114,44 @@ def main():
 
         mouse_movement = pygame.mouse.get_rel()
         ang += 0.5 * mouse_movement[0]
+        ang %= 360
 
         glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        glTranslatef(0, -20, -75)
-        glRotatef(-45, 0, 1, 0)
-        glRotatef(-90, 1, 0, 0)
-        glRotatef(ang, 0, 0, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         for model in models:
-            models[model].draw()
+            movements = models["knight"].movement
+            if model != "knight":
+                front = 0
+                left = 0
+                if "front" in movements:
+                    front = 1
+                elif "back" in movements:
+                    front = -1
+                if "right" in movements:
+                    left = -1
+                elif "left" in movements:
+                    left = 1
+
+                if front < 0 and left < 0:
+                    models["knight"].rotation = 45
+                elif front < 0 and left > 0:
+                    models["knight"].rotation = -45
+                elif front > 0 and left < 0:
+                    models["knight"].rotation = -225
+                elif front > 0 and left > 0:
+                    models["knight"].rotation = -135
+                elif front < 0:
+                    models["knight"].rotation = 0
+                elif front > 0:
+                    models["knight"].rotation = -180
+                elif left < 0:
+                    models["knight"].rotation = -270
+                elif left > 0:
+                    models["knight"].rotation = -90
+                models[model].x += front
+                models[model].y += left
+            models[model].draw(angle=ang)
 
         pygame.display.flip()
 

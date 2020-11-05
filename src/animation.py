@@ -4,7 +4,8 @@ from obj import Object
 
 
 class Animation:
-    def __init__(self, frames=0):
+    def __init__(self, name, frames=0):
+        self.name = name
         self.frames = frames
         self.current_frame = 0
         self.objs = {}

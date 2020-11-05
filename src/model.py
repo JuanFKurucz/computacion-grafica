@@ -7,6 +7,14 @@ from animation import Animation
 
 
 class Model:
+    @staticmethod
+    def default_draw(ang):
+        glLoadIdentity()
+        glTranslatef(0, -15, -75)
+        glRotatef(-45, 0, 1, 0)
+        glRotatef(-90, 1, 0, 0)
+        glRotatef(ang, 0, 0, 1)
+
     def __init__(self, assets_folder, animations_prefix, texture_path):
         self.animations = {}
         self.current_animation = None
@@ -15,12 +23,17 @@ class Model:
         self.animations_prefix = animations_prefix
         self.default_animation = None
 
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        self.rotation = 0
+
     def add_animation(self, animation_type, animation):
         self.animations[animation_type] = animation
 
     def load_animations(self):
         for prefix in self.animations_prefix:
-            animation = Animation(self.animations_prefix[prefix]["frames"])
+            animation = Animation(prefix, self.animations_prefix[prefix]["frames"])
             animation.load_animations(self.assets_folder, prefix)
             self.add_animation(prefix, animation)
 
@@ -31,13 +44,19 @@ class Model:
         self.current_animation = self.animations[self.default_animation]
 
     def change_animation(self, animation_type=None):
+        if self.current_animation and self.current_animation.name == animation_type:
+            return
         if not animation_type:
             animation_type = self.default_animation
         self.current_animation = self.animations[animation_type]
         self.current_animation.start_time = time()
 
-    def draw(self, light=False):
+    def draw(self, light=False, angle=0):
+        Model.default_draw(angle)
         current_obj = self.current_animation.current_obj
+
+        glRotatef(self.rotation, 0, 0, 1)
+        glTranslate(self.x, self.y, self.z)
 
         if current_obj.vertexes:
             glEnableClientState(GL_VERTEX_ARRAY)
