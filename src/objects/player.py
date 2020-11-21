@@ -19,19 +19,28 @@ class Player(Model):
         self.movement.append(move)
         for model in self.child_models:
             model.add_move(move)
+        if self.crouching:
+            self.crouching = not self.crouching
 
     def remove_move(self, move):
-        self.movement.remove(move)
-        if len(self.movement) == 0:
-            self.change_animation()
+        if move in self.movement:
+            self.movement.remove(move)
+            if len(self.movement) == 0:
+                self.change_animation()
         for model in self.child_models:
             model.remove_move(move)
 
+    def get_movement(self):
+        return self.movement if not self.crouching else []
+
     def jump(self):
         if not self.jumping:
+            self.crouching = False
             self.change_animation("jump")
         else:
-            self.change_animation()
+            animation = "run" if len(self.movement) else None
+            self.change_animation(animation)
+
         self.jumping = not self.jumping
         for model in self.child_models:
             model.jump()
@@ -39,8 +48,10 @@ class Player(Model):
     def crouch(self):
         if not self.crouching:
             self.change_animation("crouch_stand")
+            self.jumping = False
         else:
-            self.change_animation()
+            animation = "run" if len(self.movement) else None
+            self.change_animation(animation)
 
         self.crouching = not self.crouching
         for model in self.child_models:

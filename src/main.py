@@ -110,7 +110,7 @@ def main():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         player_models = models["knight"].get_models()
-        movements = models["knight"].movement
+        movements = models["knight"].get_movement()
 
         front = 0
         left = 0
@@ -146,7 +146,7 @@ def main():
                 models[model].move_x(front)
                 models[model].move_y(left)
             models[model].draw(angle=ang)
-            
+
         pygame.display.flip()
 
     # Cuando salgo del loop, antes de cerrar el programa libero todos los recursos creados
