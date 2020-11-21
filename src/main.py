@@ -143,9 +143,10 @@ def main():
 
         for model in models:
             if model not in player_models:
-                models[model].x += front
-                models[model].y += left
+                models[model].move_x(front)
+                models[model].move_y(left)
             models[model].draw(angle=ang)
+            
         pygame.display.flip()
 
     # Cuando salgo del loop, antes de cerrar el programa libero todos los recursos creados

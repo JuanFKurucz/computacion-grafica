@@ -1,4 +1,5 @@
 import json
+import random
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -66,20 +67,40 @@ def load_models(gouraud=None):
     with open("utils/config.json") as json_file:
         data = json.load(json_file)
         for model_info in data["models"]:
-            if model_info in ["knight", "weapon_k"]:
-                model = Player(
-                    model_info,
-                    data["models"][model_info]["assets"],
-                    data["models"][model_info]["animations"],
-                    data["models"][model_info]["texture"],
-                )
-            else:
-                model = Model(
-                    model_info,
-                    data["models"][model_info]["assets"],
-                    data["models"][model_info]["animations"],
-                    data["models"][model_info]["texture"],
-                )
-            model.load(data["models"][model_info]["default_animation"], gouraud=gouraud)
-            models[model_info] = model
+            instances = data["models"][model_info].get("instances")
+            if not instances:
+                instances = 1
+            for i in range(instances):
+                model_name = f"{model_info}_{i}" if instances > 1 else model_info
+                position = data["models"][model_info].get("position", [0, 0, 0])
+                new_position = []
+                for p in position:
+                    if p == "random":
+                        new_position.append(random.randint(-10, 10))
+                    else:
+                        new_position.append(p)
+                position = new_position
+
+                if model_info in ["knight", "weapon_k"]:
+                    model = Player(
+                        model_name,
+                        data["models"][model_info]["assets"],
+                        data["models"][model_info]["animations"],
+                        data["models"][model_info]["texture"],
+                        position,
+                        data["models"][model_info].get("size"),
+                        data["models"][model_info].get("speed", 1),
+                    )
+                else:
+                    model = Model(
+                        model_name,
+                        data["models"][model_info]["assets"],
+                        data["models"][model_info]["animations"],
+                        data["models"][model_info]["texture"],
+                        position,
+                        data["models"][model_info].get("size"),
+                        data["models"][model_info].get("speed", 1),
+                    )
+                model.load(data["models"][model_info]["default_animation"], gouraud=gouraud)
+                models[model_name] = model
     return models

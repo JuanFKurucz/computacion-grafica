@@ -48,6 +48,16 @@
       },
       "default_animation": "stand"
     },
+    "box": {
+      "assets": "assets/box",
+      "texture": "box.jpg",
+      "animations": { "box": { "frames": 1 } },
+      "default_animation": "box",
+      "position": ["random", "random", 0.2],
+      "instances": 25,
+      "size": 100,
+      "speed": 0.01
+    },
     "floor": {
       "assets": "assets/floor",
       "texture": "floor.jpg",

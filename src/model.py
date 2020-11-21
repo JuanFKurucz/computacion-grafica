@@ -15,7 +15,9 @@ class Model:
         glRotatef(-90, 1, 0, 0)
         glRotatef(ang, 0, 0, 1)
 
-    def __init__(self, name, assets_folder, animations_prefix, texture_path):
+    def __init__(
+        self, name, assets_folder, animations_prefix, texture_path, initial_position, size, speed
+    ):
         self.name = name
         self.animations = {}
         self.current_animation = None
@@ -25,11 +27,25 @@ class Model:
         self.default_animation = None
         self.unifTextura = None
 
-        self.x = 0
-        self.y = 0
-        self.z = 0
+        if initial_position:
+            self.x = initial_position[0]
+            self.y = initial_position[1]
+            self.z = initial_position[2]
+        else:
+            self.x = 0
+            self.y = 0
+            self.z = 0
         self.rotation = 0
         self.child_models = []
+
+        self.size = size
+        self.speed = speed
+
+    def move_x(self, movement):
+        self.x += movement * self.speed
+
+    def move_y(self, movement):
+        self.y += movement * self.speed
 
     def attach_model(self, model):
         self.child_models.append(model)
@@ -63,6 +79,9 @@ class Model:
     def draw(self, light=False, angle=0):
         Model.default_draw(angle)
         current_obj = self.current_animation.current_obj
+
+        if self.size:
+            glScale(self.size, self.size, self.size)
 
         glRotatef(self.rotation, 0, 0, 1)
         glTranslate(self.x, self.y, self.z)

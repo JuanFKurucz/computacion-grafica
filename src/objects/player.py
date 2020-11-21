@@ -2,8 +2,12 @@ from model import Model
 
 
 class Player(Model):
-    def __init__(self, name, assets_folder, animations_prefix, texture_path):
-        super().__init__(name, assets_folder, animations_prefix, texture_path)
+    def __init__(
+        self, name, assets_folder, animations_prefix, texture_path, initial_position, size, speed
+    ):
+        super().__init__(
+            name, assets_folder, animations_prefix, texture_path, initial_position, size, speed
+        )
 
         self.jumping = False
         self.crouching = False
