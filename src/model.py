@@ -26,6 +26,7 @@ class Model:
         size,
         speed,
         default_sound,
+        back,
     ):
         self.name = name
         self.animations = {}
@@ -55,6 +56,7 @@ class Model:
 
         self.size = size
         self.speed = speed
+        self.back = back
 
     def move_x(self, movement):
         self.x += movement * self.speed
@@ -112,6 +114,10 @@ class Model:
     def draw(self, light=False, angle=0):
         Model.default_draw(angle)
         current_obj = self.current_animation.current_obj
+        if not self.back:
+            glFrontFace(GL_CW)
+        else:
+            glFrontFace(GL_CCW)
 
         if self.size:
             glScale(self.size, self.size, self.size)

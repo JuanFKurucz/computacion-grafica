@@ -3,10 +3,27 @@ from model import Model
 
 class Player(Model):
     def __init__(
-        self, name, assets_folder, animations_prefix, texture_path, initial_position, size, speed, default_sound
+        self,
+        name,
+        assets_folder,
+        animations_prefix,
+        texture_path,
+        initial_position,
+        size,
+        speed,
+        default_sound,
+        back,
     ):
         super().__init__(
-            name, assets_folder, animations_prefix, texture_path, initial_position, size, speed, default_sound
+            name,
+            assets_folder,
+            animations_prefix,
+            texture_path,
+            initial_position,
+            size,
+            speed,
+            default_sound,
+            back,
         )
 
         self.jumping = False

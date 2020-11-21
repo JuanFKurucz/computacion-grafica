@@ -114,6 +114,7 @@ def load_models(gouraud=None):
                         data["models"][model_info].get("size"),
                         data["models"][model_info].get("speed", 1),
                         sound,
+                        data["models"][model_info].get("back", False),
                     )
                 else:
                     model = Model(
@@ -125,7 +126,54 @@ def load_models(gouraud=None):
                         data["models"][model_info].get("size"),
                         data["models"][model_info].get("speed", 1),
                         sound,
+                        data["models"][model_info].get("back", False),
                     )
                 model.load(data["models"][model_info]["default_animation"], gouraud=gouraud)
                 models[model_name] = model
     return models
+
+
+def load_lighting():
+    lights = [
+        GL_LIGHT0,
+        GL_LIGHT1,
+        GL_LIGHT2,
+        GL_LIGHT3,
+        GL_LIGHT4,
+        GL_LIGHT5,
+        GL_LIGHT6,
+        GL_LIGHT7,
+    ]
+    light_params = {
+        "diffuse": GL_DIFFUSE,
+        "ambient": GL_AMBIENT,
+        "specular": GL_SPECULAR,
+        "position": GL_POSITION,
+        "spot_direction": GL_SPOT_DIRECTION,
+        "spot_exponent": GL_SPOT_EXPONENT,
+        "spot_cutoff": GL_SPOT_CUTOFF,
+        "constant_attenuation": GL_CONSTANT_ATTENUATION,
+        "linear_attenuation": GL_LINEAR_ATTENUATION,
+        "quadratic_attenuation": GL_QUADRATIC_ATTENUATION,
+    }
+
+    with open("utils/config.json") as json_file:
+        data = json.load(json_file)
+        l = 0
+        for light in data["lighting"]:
+            if l > 7:
+                break
+            glEnable(lights[l])
+            for key in light:
+                glLightfv(lights[l], light_params[key], light[key])
+            l += 1
+
+
+def load_materials():
+    with open("utils/config.json") as json_file:
+        data = json.load(json_file)
+        materials = data["materials"]
+        glMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE, materials["diffuse"])
+        glMaterial(GL_FRONT_AND_BACK, GL_AMBIENT, materials["ambient"])
+        glMaterial(GL_FRONT_AND_BACK, GL_SPECULAR, materials["specular"])
+        glMaterial(GL_FRONT_AND_BACK, GL_SHININESS, materials["shininess"])

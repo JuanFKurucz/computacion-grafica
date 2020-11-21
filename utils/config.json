@@ -3,6 +3,26 @@
     "knight_run": "run.wav",
     "weapon": "fire.wav"
   },
+  "materials": {
+    "diffuse": [1, 1, 1, 1],
+    "ambient": [1, 1, 1, 1],
+    "specular": [1, 1, 1, 1],
+    "shininess": 16
+  },
+  "lighting": [
+    {
+      "diffuse": [1.0, 1.0, 1.0, 1.0],
+      "ambient": [0.35, 0.35, 0.35, 0.7],
+      "specular": [0.0, 0.0, 0.0, 1.0],
+      "position": [1.0, 1.0, 1.0, 1.0]
+    },
+    {
+      "diffuse": [1.0, 0.0, 0.0, 1],
+      "ambient": [0.1, 0.1, 0.1, 1],
+      "specular": [0, 100, -50, 1],
+      "position": [1.0, 1.0, 1.0, 1.0]
+    }
+  ],
   "models": {
     "knight": {
       "assets": "assets/knight",
@@ -64,6 +84,7 @@
       }
     },
     "box": {
+      "back": true,
       "assets": "assets/box",
       "texture": "box.jpg",
       "animations": { "box": { "frames": 1 } },
