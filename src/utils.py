@@ -28,7 +28,6 @@ def compile_program(path, type):
     # En este caso le pido el stado de la ultima compilacion ejecutada
     if glGetShaderiv(shader, GL_COMPILE_STATUS) != GL_TRUE:
         # Si la compilacion falla, muestro el error y retorno 0 (shader nulo)
-        print(path + ": " + glGetShaderInfoLog(shader))
         # Me aseguro de liberar los recursos que reserve en memoria de vide, ya que no los voy a usar
         glDeleteShader(shader)
         return 0

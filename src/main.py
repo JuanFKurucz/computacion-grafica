@@ -77,7 +77,6 @@ def main():
 
         glMatrixMode(GL_MODELVIEW)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
         player_models = models["knight"].get_models()
         movements = models["knight"].get_movement()
 
@@ -115,6 +114,7 @@ def main():
                 models[model].move_x(front)
                 models[model].move_y(left)
             models[model].draw(angle=ang)
+
             if models[model].current_sound:
                 current_sound = models[model].current_sound.play()
 

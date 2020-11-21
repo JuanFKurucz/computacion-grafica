@@ -138,6 +138,9 @@ class Model:
             glTexCoordPointer(2, GL_FLOAT, 0, current_obj.textures)
             glBindTexture(GL_TEXTURE_2D, self.texture)
 
+            if self.unifTextura:
+                glUniform1ui(self.unifTextura, 0)
+
         glDrawArrays(GL_TRIANGLES, 0, len(current_obj.poligons))
 
         if current_obj.vertexes:
