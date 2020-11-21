@@ -26,8 +26,14 @@ class Player(Model):
             back,
         )
 
-        self.jumping = False
-        self.crouching = False
+        self.actions = {
+            "jump": {"active": False},
+            "crouch": {"active": False},
+            "attack": {"active": False},
+            "wave": {"active": False},
+            "salute": {"active": False},
+            "point": {"active": False},
+        }
 
         self.movement = []
 
@@ -36,8 +42,6 @@ class Player(Model):
         self.movement.append(move)
         for model in self.child_models:
             model.add_move(move)
-        if self.crouching:
-            self.crouching = not self.crouching
 
     def remove_move(self, move):
         if move in self.movement:
@@ -48,28 +52,23 @@ class Player(Model):
             model.remove_move(move)
 
     def get_movement(self):
-        return self.movement if not self.crouching else []
+        return (
+            self.movement
+            if all([not self.actions[action]["active"] for action in self.actions])
+            else []
+        )
 
-    def jump(self):
-        if not self.jumping:
-            self.crouching = False
-            self.change_animation("jump")
+    def do_action(self, action_name):
+        action = self.actions[action_name]
+        if not action["active"]:
+            for other_action in self.actions:
+                self.actions[other_action]["active"] = False
+            self.change_animation(action_name)
         else:
             animation = "run" if len(self.movement) else None
             self.change_animation(animation)
 
-        self.jumping = not self.jumping
+        self.actions[action_name]["active"] = not action["active"]
         for model in self.child_models:
-            model.jump()
+            model.do_action(action_name)
 
-    def crouch(self):
-        if not self.crouching:
-            self.change_animation("crouch_stand")
-            self.jumping = False
-        else:
-            animation = "run" if len(self.movement) else None
-            self.change_animation(animation)
-
-        self.crouching = not self.crouching
-        for model in self.child_models:
-            model.crouch()

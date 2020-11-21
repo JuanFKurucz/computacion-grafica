@@ -18,7 +18,7 @@ def init():
     load_materials()
     load_lighting()
 
-    glShadeModel(GL_SMOOTH)
+    glShadeModel(GL_SMOOTH)  # shaders
     glActiveTexture(GL_TEXTURE0)
     glEnable(GL_DEPTH_TEST)  # Z-Buffer
     glEnable(GL_CULL_FACE)  # Backface Culling
@@ -39,7 +39,6 @@ def main():
     end = False
 
     models["knight"].attach_model(models["weapon_k"])
-
     while not end:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -64,9 +63,17 @@ def main():
                     models["knight"].remove_move("right")
 
                 if event.key == pygame.K_SPACE:
-                    models["knight"].jump()
+                    models["knight"].do_action("jump")
                 if event.key == pygame.K_LCTRL:
-                    models["knight"].crouch()
+                    models["knight"].do_action("crouch")
+                if event.key == pygame.K_f:
+                    models["knight"].do_action("attack")
+                if event.key == pygame.K_h:
+                    models["knight"].do_action("salute")
+                if event.key == pygame.K_c:
+                    models["knight"].do_action("wave")
+                if event.key == pygame.K_p:
+                    models["knight"].do_action("point")
 
                 elif event.key == pygame.K_ESCAPE:
                     end = True
@@ -113,6 +120,7 @@ def main():
             if model not in player_models:
                 models[model].move_x(front)
                 models[model].move_y(left)
+
             models[model].draw(angle=ang)
 
             if models[model].current_sound:

@@ -25,22 +25,12 @@
   ],
   "models": {
     "knight": {
-      "assets": "assets/knight",
+      "assets": "assets/models/knight",
       "texture": "knight.png",
       "animations": {
-        "attack": { "frames": 10 },
-        "crouch_attack": { "frames": 10 },
-        "crouch_pain": { "frames": 10 },
-        "crouch_stand": { "frames": 10 },
-        "crouch_walk": { "frames": 10 },
-        "death_fallback": { "frames": 10 },
-        "death_fallbackslow": { "frames": 10 },
-        "death_fallforward": { "frames": 10 },
-        "fallback": { "frames": 10 },
-        "flip": { "frames": 10 },
-        "jump": { "frames": 9 },
-        "pain": { "frames": 10 },
-        "point": { "frames": 10 },
+        "attack": { "frames": 12 },
+        "crouch": { "frames": 12 },
+        "jump": { "frames": 12 },
         "run": {
           "frames": 12,
           "sound": {
@@ -48,33 +38,25 @@
             "volume": 1
           }
         },
-        "salute": { "frames": 10 },
-        "stand": { "frames": 11 },
-        "wave": { "frames": 10 }
+        "salute": { "frames": 12 },
+        "stand": { "frames": 12 },
+        "wave": { "frames": 12 },
+        "point": { "frames": 12 }
       },
       "default_animation": "stand"
     },
     "weapon_k": {
-      "assets": "assets/weapon_k",
+      "assets": "assets/models/weapon_k",
       "texture": "weapon_k.png",
       "animations": {
-        "attack": { "frames": 10 },
-        "crouch_attack": { "frames": 10 },
-        "crouch_pain": { "frames": 10 },
-        "crouch_stand": { "frames": 10 },
-        "crouch_walk": { "frames": 10 },
-        "death_fallback": { "frames": 10 },
-        "death_fallbackslow": { "frames": 10 },
-        "death_fallforward": { "frames": 10 },
-        "fallback": { "frames": 10 },
-        "flip": { "frames": 10 },
-        "jump": { "frames": 9 },
-        "pain": { "frames": 10 },
-        "point": { "frames": 10 },
+        "attack": { "frames": 12 },
+        "crouch": { "frames": 12 },
+        "jump": { "frames": 12 },
         "run": { "frames": 12 },
-        "salute": { "frames": 10 },
-        "stand": { "frames": 11 },
-        "wave": { "frames": 10 }
+        "salute": { "frames": 12 },
+        "stand": { "frames": 12 },
+        "wave": { "frames": 12 },
+        "point": { "frames": 12 }
       },
       "default_animation": "stand",
       "default_sound": {
@@ -85,7 +67,7 @@
     },
     "box": {
       "back": true,
-      "assets": "assets/box",
+      "assets": "assets/models/box",
       "texture": "box.jpg",
       "animations": { "box": { "frames": 1 } },
       "default_animation": "box",
@@ -95,7 +77,7 @@
       "speed": 0.01
     },
     "floor": {
-      "assets": "assets/floor",
+      "assets": "assets/models/floor",
       "texture": "floor.jpg",
       "animations": { "floor": { "frames": 1 } },
       "default_animation": "floor"
