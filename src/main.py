@@ -13,14 +13,8 @@ def main():
 
     models = load_models()
 
-    # Creo un programa de shading y guardo la referencia en la variable gouraud
-    gouraud = create_shader("./assets/shaders/gouraud_vs.hlsl", "./assets/shaders/gouraud_fs.hlsl")
-
     # Activo el manejo de texturas
     glEnable(GL_TEXTURE_2D)
-    # Activo la textura 0 (hay 8 disponibles)
-    glActiveTexture(GL_TEXTURE0)
-    # Llamo a la funcion que levanta la textura a memoria de video
 
     glMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE, [1, 1, 1, 1])
     glMaterial(GL_FRONT_AND_BACK, GL_AMBIENT, [1, 1, 1, 1])
@@ -28,6 +22,8 @@ def main():
     glMaterial(GL_FRONT_AND_BACK, GL_SHININESS, 16)
 
     glEnable(GL_LIGHT0)
+    glShadeModel(GL_SMOOTH)
+    glActiveTexture(GL_TEXTURE0)
 
     glLight(GL_LIGHT0, GL_DIFFUSE, [1, 1, 1, 1])
     glLight(GL_LIGHT0, GL_AMBIENT, [0.1, 0.1, 0.1, 1])
@@ -35,6 +31,7 @@ def main():
     glLight(GL_LIGHT0, GL_SPECULAR, [1, 1, 1, 1])
 
     glEnable(GL_DEPTH_TEST)
+    glEnable(GL_LIGHTING)
 
     glMatrixMode(GL_PROJECTION)
     glViewport(0, 0, display[0], display[1])
@@ -48,7 +45,6 @@ def main():
     light = False
     end = False
 
-    models["knight"].rotation = -200
     while not end:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -101,14 +97,6 @@ def main():
                         glFrontFace(GL_CW)
                     else:
                         glFrontFace(GL_CCW)
-                if event.key == pygame.K_l:
-                    light = not light
-                    if light:
-                        # Con la tecla L habilito y deshabilito el shader
-                        glUseProgram(gouraud)
-                    else:
-                        glUseProgram(0)
-
                 elif event.key == pygame.K_ESCAPE:
                     end = True
 

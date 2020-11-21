@@ -22,6 +22,7 @@ class Model:
         self.assets_folder = assets_folder
         self.animations_prefix = animations_prefix
         self.default_animation = None
+        self.unifTextura = None
 
         self.x = 0
         self.y = 0
@@ -37,10 +38,10 @@ class Model:
             animation.load_animations(self.assets_folder, prefix)
             self.add_animation(prefix, animation)
 
-    def load(self, default_animation):
+    def load(self, default_animation, gouraud=None):
         self.default_animation = default_animation
         self.load_animations()
-        self.load_texture(f"{self.assets_folder}/{self.texture_path}")
+        self.load_texture(f"{self.assets_folder}/{self.texture_path}", gouraud=gouraud)
         self.current_animation = self.animations[self.default_animation]
 
     def change_animation(self, animation_type=None):
@@ -71,10 +72,6 @@ class Model:
             glTexCoordPointer(2, GL_FLOAT, 0, current_obj.textures)
             glBindTexture(GL_TEXTURE_2D, self.texture)
 
-        if light:
-            # Si estoy usando shaders, le digo que la textura es la que esta activa en la posicion 0 (de las 8 disponibles)
-            glUniform1i(self.texture, 0)
-
         glDrawArrays(GL_TRIANGLES, 0, len(current_obj.poligons))
 
         if current_obj.vertexes:
@@ -87,7 +84,8 @@ class Model:
             glDisableClientState(GL_TEXTURE_COORD_ARRAY)
             glBindTexture(GL_TEXTURE_2D, 0)
 
-    def load_texture(self, path):
+    def load_texture(self, path, gouraud=None):
+
         # Cargo la imagen a memoria. pygame se hace cargo de decodificarla correctamente
         surf = pygame.image.load(path)
         # Obtengo la matriz de colores de la imagen en forma de un array binario
@@ -119,3 +117,5 @@ class Model:
         glBindTexture(GL_TEXTURE_2D, 0)
         # devuelvo el identificador de la textura para que pueda ser usada mas adelante
         self.texture = texid
+        if gouraud:
+            self.unifTextura = glGetUniformLocation(gouraud, path)

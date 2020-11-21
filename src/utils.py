@@ -61,7 +61,7 @@ def create_shader(vSource, fSource):
     return shader
 
 
-def load_models():
+def load_models(gouraud=None):
     models = {}
     with open("utils/config.json") as json_file:
         data = json.load(json_file)
@@ -78,6 +78,6 @@ def load_models():
                     data["models"][model_info]["animations"],
                     data["models"][model_info]["texture"],
                 )
-            model.load(data["models"][model_info]["default_animation"])
+            model.load(data["models"][model_info]["default_animation"], gouraud=gouraud)
             models[model_info] = model
     return models
