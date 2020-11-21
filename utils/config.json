@@ -24,6 +24,30 @@
       },
       "default_animation": "stand"
     },
+    "weapon_k": {
+      "assets": "assets/weapon_k",
+      "texture": "weapon_k.png",
+      "animations": {
+        "attack": { "frames": 10 },
+        "crouch_attack": { "frames": 10 },
+        "crouch_pain": { "frames": 10 },
+        "crouch_stand": { "frames": 10 },
+        "crouch_walk": { "frames": 10 },
+        "death_fallback": { "frames": 10 },
+        "death_fallbackslow": { "frames": 10 },
+        "death_fallforward": { "frames": 10 },
+        "fallback": { "frames": 10 },
+        "flip": { "frames": 10 },
+        "jump": { "frames": 9 },
+        "pain": { "frames": 10 },
+        "point": { "frames": 10 },
+        "run": { "frames": 12 },
+        "salute": { "frames": 10 },
+        "stand": { "frames": 11 },
+        "wave": { "frames": 10 }
+      },
+      "default_animation": "stand"
+    },
     "floor": {
       "assets": "assets/floor",
       "texture": "floor.jpg",
