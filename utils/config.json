@@ -1,4 +1,8 @@
 {
+  "sounds": {
+    "knight_run": "run.wav",
+    "weapon": "fire.wav"
+  },
   "models": {
     "knight": {
       "assets": "assets/knight",
@@ -17,7 +21,13 @@
         "jump": { "frames": 9 },
         "pain": { "frames": 10 },
         "point": { "frames": 10 },
-        "run": { "frames": 12 },
+        "run": {
+          "frames": 12,
+          "sound": {
+            "name": "knight_run",
+            "volume": 1
+          }
+        },
         "salute": { "frames": 10 },
         "stand": { "frames": 11 },
         "wave": { "frames": 10 }
@@ -46,7 +56,12 @@
         "stand": { "frames": 11 },
         "wave": { "frames": 10 }
       },
-      "default_animation": "stand"
+      "default_animation": "stand",
+      "default_sound": {
+        "name": "weapon",
+        "volume": 0.3,
+        "loop": true
+      }
     },
     "box": {
       "assets": "assets/box",

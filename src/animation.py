@@ -4,12 +4,13 @@ from obj import Object
 
 
 class Animation:
-    def __init__(self, name, frames=0):
+    def __init__(self, name, frames=0, sound=None):
         self.name = name
         self.frames = frames
         self.current_frame = 0
         self.objs = {}
         self.start_time = 0
+        self.sound = sound
 
     def load_animation(self, file):
         file_index = file.split(".")[-2].split("_")[-1]

@@ -4,6 +4,7 @@ import pygame
 from OpenGL.GL import *
 
 from animation import Animation
+from sound import Sound
 
 
 class Model:
@@ -16,11 +17,25 @@ class Model:
         glRotatef(ang, 0, 0, 1)
 
     def __init__(
-        self, name, assets_folder, animations_prefix, texture_path, initial_position, size, speed
+        self,
+        name,
+        assets_folder,
+        animations_prefix,
+        texture_path,
+        initial_position,
+        size,
+        speed,
+        default_sound,
     ):
         self.name = name
         self.animations = {}
         self.current_animation = None
+        self.default_sound = default_sound
+        self.current_sound = self.default_sound
+
+        if self.current_sound:
+            self.current_sound.start()
+
         self.texture_path = texture_path
         self.assets_folder = assets_folder
         self.animations_prefix = animations_prefix
@@ -58,7 +73,15 @@ class Model:
 
     def load_animations(self):
         for prefix in self.animations_prefix:
-            animation = Animation(prefix, self.animations_prefix[prefix]["frames"])
+            sound_info = self.animations_prefix[prefix].get("sound")
+            sound = None
+            if sound_info:
+                sound = Sound(
+                    sound_info.get("name"),
+                    sound_info.get("volume", 1),
+                    sound_info.get("loop", False),
+                )
+            animation = Animation(prefix, self.animations_prefix[prefix]["frames"], sound,)
             animation.load_animations(self.assets_folder, prefix)
             self.add_animation(prefix, animation)
 
@@ -74,6 +97,16 @@ class Model:
         if not animation_type:
             animation_type = self.default_animation
         self.current_animation = self.animations[animation_type]
+        past_sound = self.current_sound
+        if past_sound:
+            past_sound.stop()
+        self.current_sound = (
+            self.current_animation.sound if self.current_animation.sound else self.default_sound
+        )
+
+        if self.current_sound:
+            self.current_sound.start()
+        # if past_sound and (not self.current_sound or (past_sound.name != self.current_sound.name)):
         self.current_animation.start_time = time()
 
     def draw(self, light=False, angle=0):

@@ -7,6 +7,9 @@ from OpenGL.GL.shaders import *
 
 from model import Model
 from objects.player import Player
+from sound import Sound
+
+from pygame import mixer
 
 # Uso esta funcion para compilar de forma individual el codigo de cada componente del shader (vertex y fragment)
 # Le paso el path al archivo y el tipo de shader (GL_VERTEX_SHADER o GL_FRAGMENT_SHADER)
@@ -62,6 +65,17 @@ def create_shader(vSource, fSource):
     return shader
 
 
+def load_sounds():
+    assets_folder = "./assets/sounds/"
+    sounds = {}
+    with open("utils/config.json") as json_file:
+        data = json.load(json_file)
+        for sound_info in data["sounds"]:
+            file = data["sounds"][sound_info]
+            sounds[sound_info] = mixer.Sound(f"{assets_folder}{file}")
+    Sound.sounds = sounds
+
+
 def load_models(gouraud=None):
     models = {}
     with open("utils/config.json") as json_file:
@@ -81,6 +95,15 @@ def load_models(gouraud=None):
                         new_position.append(p)
                 position = new_position
 
+                sound_info = data["models"][model_info].get("default_sound")
+                sound = None
+                if sound_info:
+                    sound = Sound(
+                        sound_info.get("name"),
+                        sound_info.get("volume", 1),
+                        sound_info.get("loop", False),
+                    )
+
                 if model_info in ["knight", "weapon_k"]:
                     model = Player(
                         model_name,
@@ -90,6 +113,7 @@ def load_models(gouraud=None):
                         position,
                         data["models"][model_info].get("size"),
                         data["models"][model_info].get("speed", 1),
+                        sound,
                     )
                 else:
                     model = Model(
@@ -100,6 +124,7 @@ def load_models(gouraud=None):
                         position,
                         data["models"][model_info].get("size"),
                         data["models"][model_info].get("speed", 1),
+                        sound,
                     )
                 model.load(data["models"][model_info]["default_animation"], gouraud=gouraud)
                 models[model_name] = model

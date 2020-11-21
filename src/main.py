@@ -3,14 +3,16 @@ from pygame.locals import *
 
 from OpenGL.GL import *
 
-from utils import load_models, create_shader
+from utils import load_models, load_sounds, create_shader
 
 
 def main():
     pygame.init()
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+    pygame.mixer.init()
 
+    load_sounds()
     models = load_models()
 
     # Activo el manejo de texturas
@@ -146,6 +148,8 @@ def main():
                 models[model].move_x(front)
                 models[model].move_y(left)
             models[model].draw(angle=ang)
+            if models[model].current_sound:
+                current_sound = models[model].current_sound.play()
 
         pygame.display.flip()
 
