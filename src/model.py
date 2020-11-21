@@ -15,7 +15,8 @@ class Model:
         glRotatef(-90, 1, 0, 0)
         glRotatef(ang, 0, 0, 1)
 
-    def __init__(self, assets_folder, animations_prefix, texture_path):
+    def __init__(self, name, assets_folder, animations_prefix, texture_path):
+        self.name = name
         self.animations = {}
         self.current_animation = None
         self.texture_path = texture_path
@@ -28,6 +29,13 @@ class Model:
         self.y = 0
         self.z = 0
         self.rotation = 0
+        self.child_models = []
+
+    def attach_model(self, model):
+        self.child_models.append(model)
+
+    def get_models(self):
+        return [child.name for child in self.child_models] + [self.name]
 
     def add_animation(self, animation_type, animation):
         self.animations[animation_type] = animation

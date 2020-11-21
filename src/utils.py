@@ -66,14 +66,16 @@ def load_models(gouraud=None):
     with open("utils/config.json") as json_file:
         data = json.load(json_file)
         for model_info in data["models"]:
-            if model_info == "knight":
+            if model_info in ["knight", "weapon_k"]:
                 model = Player(
+                    model_info,
                     data["models"][model_info]["assets"],
                     data["models"][model_info]["animations"],
                     data["models"][model_info]["texture"],
                 )
             else:
                 model = Model(
+                    model_info,
                     data["models"][model_info]["assets"],
                     data["models"][model_info]["animations"],
                     data["models"][model_info]["texture"],

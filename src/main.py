@@ -45,6 +45,8 @@ def main():
     light = False
     end = False
 
+    models["knight"].attach_model(models["weapon_k"])
+
     while not end:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -107,44 +109,46 @@ def main():
         glMatrixMode(GL_MODELVIEW)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        for model in models:
-            movements = models["knight"].movement
-            if model != "knight":
-                front = 0
-                left = 0
-                if "front" in movements:
-                    front = 1
-                elif "back" in movements:
-                    front = -1
-                if "right" in movements:
-                    left = -1
-                elif "left" in movements:
-                    left = 1
+        player_models = models["knight"].get_models()
+        movements = models["knight"].movement
 
-                if front < 0 and left < 0:
-                    models["knight"].rotation = 45
-                elif front < 0 and left > 0:
-                    models["knight"].rotation = -45
-                elif front > 0 and left < 0:
-                    models["knight"].rotation = -225
-                elif front > 0 and left > 0:
-                    models["knight"].rotation = -135
-                elif front < 0:
-                    models["knight"].rotation = 0
-                elif front > 0:
-                    models["knight"].rotation = -180
-                elif left < 0:
-                    models["knight"].rotation = -270
-                elif left > 0:
-                    models["knight"].rotation = -90
+        front = 0
+        left = 0
+        if "front" in movements:
+            front = 1
+        elif "back" in movements:
+            front = -1
+        if "right" in movements:
+            left = -1
+        elif "left" in movements:
+            left = 1
+
+        for player_model in player_models:
+            if front < 0 and left < 0:
+                models[player_model].rotation = 45
+            elif front < 0 and left > 0:
+                models[player_model].rotation = -45
+            elif front > 0 and left < 0:
+                models[player_model].rotation = -225
+            elif front > 0 and left > 0:
+                models[player_model].rotation = -135
+            elif front < 0:
+                models[player_model].rotation = 0
+            elif front > 0:
+                models[player_model].rotation = -180
+            elif left < 0:
+                models[player_model].rotation = -270
+            elif left > 0:
+                models[player_model].rotation = -90
+
+        for model in models:
+            if model not in player_models:
                 models[model].x += front
                 models[model].y += left
             models[model].draw(angle=ang)
-
         pygame.display.flip()
 
     # Cuando salgo del loop, antes de cerrar el programa libero todos los recursos creados
-    glDeleteProgram(gouraud)
     glDeleteTextures([models[model].texture for model in models])
     pygame.quit()
     quit()
