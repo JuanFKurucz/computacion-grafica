@@ -64,83 +64,90 @@ def create_shader(vSource, fSource):
     return shader
 
 
+config_file = None
+
+
+def get_configuration():
+    global config_file
+    if config_file is None:
+        with open("utils/config.json") as json_file:
+            config_file = json.load(json_file)
+    return config_file
+
+
 def load_sounds():
     assets_folder = "./assets/sounds/"
     sounds = {}
-    with open("utils/config.json") as json_file:
-        data = json.load(json_file)
-        for sound_info in data["sounds"]:
-            file = data["sounds"][sound_info]
-            sounds[sound_info] = mixer.Sound(f"{assets_folder}{file}")
+    data = get_configuration()
+    for sound_info in data["sounds"]:
+        file = data["sounds"][sound_info]
+        sounds[sound_info] = mixer.Sound(f"{assets_folder}{file}")
     Sound.sounds = sounds
 
 
 def load_models(gouraud=None):
     models = {}
-    with open("utils/config.json") as json_file:
-        data = json.load(json_file)
-        for model_info in data["models"]:
-            instances = data["models"][model_info].get("instances")
-            if not instances:
-                instances = 1
-            texture_id = None
-            for i in range(instances):
-                model_name = f"{model_info}_{i}" if instances > 1 else model_info
-                position = data["models"][model_info].get("position", [0, 0, 0])
-                new_position = []
-                for p in position:
-                    if p == "random":
-                        new_position.append(random.randint(-10, 10))
-                    else:
-                        new_position.append(p)
-                position = new_position
-
-                sound_info = data["models"][model_info].get("default_sound")
-                sound = None
-                if sound_info:
-                    sound = Sound(
-                        sound_info.get("name"),
-                        sound_info.get("volume", 1),
-                        sound_info.get("loop", False),
-                    )
-
-                if model_info in ["knight", "weapon_k"]:
-                    model = Player(
-                        model_name,
-                        data["models"][model_info]["assets"],
-                        data["models"][model_info]["animations"],
-                        data["models"][model_info]["texture"],
-                        position,
-                        data["models"][model_info].get("size"),
-                        data["models"][model_info].get("speed", 1),
-                        sound,
-                        data["models"][model_info].get("back", False),
-                    )
+    data = get_configuration()
+    for model_info in data["models"]:
+        instances = data["models"][model_info].get("instances")
+        if not instances:
+            instances = 1
+        texture_id = None
+        for i in range(instances):
+            model_name = f"{model_info}_{i}" if instances > 1 else model_info
+            position = data["models"][model_info].get("position", [0, 0, 0])
+            new_position = []
+            for p in position:
+                if p == "random":
+                    new_position.append(random.randint(-10, 10))
                 else:
-                    model = Model(
-                        model_name,
-                        data["models"][model_info]["assets"],
-                        data["models"][model_info]["animations"],
-                        data["models"][model_info]["texture"],
-                        position,
-                        data["models"][model_info].get("size"),
-                        data["models"][model_info].get("speed", 1),
-                        sound,
-                        data["models"][model_info].get("back", False),
-                    )
-                if model_info == "knight":
-                    model.load(
-                        data["models"][model_info]["default_animation"],
-                        gouraud=gouraud,
-                        texture_id=texture_id,
-                    )
-                else:
-                    model.load(
-                        data["models"][model_info]["default_animation"], texture_id=texture_id
-                    )
-                texture_id = model.texture
+                    new_position.append(p)
+            position = new_position
 
-                models[model_name] = model
+            sound_info = data["models"][model_info].get("default_sound")
+            sound = None
+            if sound_info:
+                sound = Sound(
+                    sound_info.get("name"),
+                    sound_info.get("volume", 1),
+                    sound_info.get("loop", False),
+                )
+
+            if model_info in ["knight", "weapon_k"]:
+                model = Player(
+                    model_name,
+                    data["models"][model_info]["assets"],
+                    data["models"][model_info]["animations"],
+                    data["models"][model_info]["texture"],
+                    position,
+                    data["models"][model_info].get("size"),
+                    data["models"][model_info].get("speed", 1),
+                    sound,
+                    data["models"][model_info].get("back", False),
+                )
+            else:
+                model = Model(
+                    model_name,
+                    data["models"][model_info]["assets"],
+                    data["models"][model_info]["animations"],
+                    data["models"][model_info]["texture"],
+                    position,
+                    data["models"][model_info].get("size"),
+                    data["models"][model_info].get("speed", 1),
+                    sound,
+                    data["models"][model_info].get("back", False),
+                )
+            if model_info == "knight":
+                model.load(
+                    data["models"][model_info]["default_animation"],
+                    gouraud=gouraud,
+                    texture_id=texture_id,
+                )
+            else:
+                model.load(data["models"][model_info]["default_animation"], texture_id=texture_id)
+            texture_id = model.texture
+
+            models[model_name] = model
     return models
 
 
@@ -168,23 +175,21 @@ def load_lighting():
         "quadratic_attenuation": GL_QUADRATIC_ATTENUATION,
     }
 
-    with open("utils/config.json") as json_file:
-        data = json.load(json_file)
-        l = 0
-        for light in data["lighting"]:
-            if l > 7:
-                break
-            glEnable(lights[l])
-            for key in light:
-                glLightfv(lights[l], light_params[key], light[key])
-            l += 1
+    data = get_configuration()
+    l = 0
+    for light in data["lighting"]:
+        if l > 7:
+            break
+        glEnable(lights[l])
+        for key in light:
+            glLightfv(lights[l], light_params[key], light[key])
+        l += 1
 
 
 def load_materials():
-    with open("utils/config.json") as json_file:
-        data = json.load(json_file)
-        materials = data["materials"]
-        glMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE, materials["diffuse"])
-        glMaterial(GL_FRONT_AND_BACK, GL_AMBIENT, materials["ambient"])
-        glMaterial(GL_FRONT_AND_BACK, GL_SPECULAR, materials["specular"])
-        glMaterial(GL_FRONT_AND_BACK, GL_SHININESS, materials["shininess"])
+    data = get_configuration()
+    materials = data["materials"]
+    glMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE, materials["diffuse"])
+    glMaterial(GL_FRONT_AND_BACK, GL_AMBIENT, materials["ambient"])
+    glMaterial(GL_FRONT_AND_BACK, GL_SPECULAR, materials["specular"])
+    glMaterial(GL_FRONT_AND_BACK, GL_SHININESS, materials["shininess"])

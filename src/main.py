@@ -3,7 +3,7 @@ from pygame.locals import *
 
 from OpenGL.GL import *
 
-from utils import load_lighting, load_materials, load_models, load_sounds, create_shader
+from utils import load_lighting, load_materials, load_models, load_sounds
 
 
 def init():
@@ -11,8 +11,8 @@ def init():
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
     pygame.mixer.init()
-    # Esconder cursor del mouse
-    pygame.mouse.set_visible(False)
+    pygame.mouse.set_visible(False)  # Esconder cursor del mouse
+
     # Activo el manejo de texturas
     glEnable(GL_TEXTURE_2D)
     glActiveTexture(GL_TEXTURE0)
@@ -21,8 +21,8 @@ def init():
     load_lighting()
 
     glShadeModel(GL_SMOOTH)  # shaders
-    glEnable(GL_DEPTH_TEST)  # Z-Buffer
-    glEnable(GL_CULL_FACE)  # Backface Culling
+    glEnable(GL_DEPTH_TEST)  # z-buffer
+    glEnable(GL_CULL_FACE)  # backface culling
     glEnable(GL_LIGHTING)
 
     glMatrixMode(GL_PROJECTION)
@@ -91,6 +91,7 @@ def main():
         player_models = models["knight"].get_models()
         movements = models["knight"].get_movement()
 
+        # Chequeo de movimiento actual
         front = 0
         left = 0
         if "front" in movements:
@@ -102,6 +103,7 @@ def main():
         elif "left" in movements:
             left = 1
 
+        # Rotacion de modelos asociados al personaje
         for player_model in player_models:
             if front < 0 and left < 0:
                 models[player_model].rotation = 45
@@ -120,13 +122,16 @@ def main():
             elif left > 0:
                 models[player_model].rotation = -90
 
+        # Dibujo de modelos
         for model in models:
+            # Movimiento de ambiente (todo menos modelos asociados al personaje)
             if model not in player_models:
                 models[model].move_x(front)
                 models[model].move_y(left)
 
             models[model].draw(angle=ang)
 
+            # Reproduccion de audio
             if models[model].current_sound:
                 current_sound = models[model].current_sound.play()
 
