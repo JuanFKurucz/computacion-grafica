@@ -28,20 +28,20 @@
       "assets": "assets/models/knight",
       "texture": "knight.png",
       "animations": {
-        "attack": { "frames": 12 },
-        "crouch": { "frames": 12 },
-        "jump": { "frames": 12 },
+        "attack": { "frames": 16 },
+        "crouch": { "frames": 16 },
+        "jump": { "frames": 16 },
         "run": {
-          "frames": 12,
+          "frames": 16,
           "sound": {
             "name": "knight_run",
             "volume": 1
           }
         },
-        "salute": { "frames": 12 },
-        "stand": { "frames": 12 },
-        "wave": { "frames": 12 },
-        "point": { "frames": 12 }
+        "salute": { "frames": 16 },
+        "stand": { "frames": 16 },
+        "wave": { "frames": 16 },
+        "point": { "frames": 16 }
       },
       "default_animation": "stand"
     },
@@ -49,14 +49,14 @@
       "assets": "assets/models/weapon_k",
       "texture": "weapon_k.png",
       "animations": {
-        "attack": { "frames": 12 },
-        "crouch": { "frames": 12 },
-        "jump": { "frames": 12 },
-        "run": { "frames": 12 },
-        "salute": { "frames": 12 },
-        "stand": { "frames": 12 },
-        "wave": { "frames": 12 },
-        "point": { "frames": 12 }
+        "attack": { "frames": 16 },
+        "crouch": { "frames": 16 },
+        "jump": { "frames": 16 },
+        "run": { "frames": 16 },
+        "salute": { "frames": 16 },
+        "stand": { "frames": 16 },
+        "wave": { "frames": 16 },
+        "point": { "frames": 16 }
       },
       "default_animation": "stand",
       "default_sound": {
