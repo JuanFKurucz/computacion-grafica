@@ -11,7 +11,8 @@ def init():
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
     pygame.mixer.init()
-
+    # Esconder cursor del mouse
+    pygame.mouse.set_visible(False)
     # Activo el manejo de texturas
     glEnable(GL_TEXTURE_2D)
     glActiveTexture(GL_TEXTURE0)
@@ -31,7 +32,6 @@ def init():
 
 def main():
     init()
-
     load_sounds()
     models = load_models()
 
@@ -79,12 +79,14 @@ def main():
                 elif event.key == pygame.K_ESCAPE:
                     end = True
 
+        # Giro el angulo segun el movimiento del mouse
         mouse_movement = pygame.mouse.get_rel()
         ang += 0.5 * mouse_movement[0]
         ang %= 360
 
         glMatrixMode(GL_MODELVIEW)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
         player_models = models["knight"].get_models()
         movements = models["knight"].get_movement()
 
