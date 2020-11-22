@@ -32,6 +32,7 @@ def init():
 
 def main():
     init()
+
     load_sounds()
     models = load_models()
 

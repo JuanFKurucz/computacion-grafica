@@ -160,9 +160,11 @@ class Model:
     def load_texture(self, path, gouraud=None):
         # Cargo la imagen a memoria. pygame se hace cargo de decodificarla correctamente
         surf = pygame.image.load(path)
+        # Doy vuelta las texturas
+        surf = pygame.transform.flip(surf, False, True)
         # Obtengo la matriz de colores de la imagen en forma de un array binario
         # Le indico el formato en que quiero almacenar los datos (RGBA) y que invierta la matriz, para poder usarla correctamente con OpenGL
-        image = pygame.image.tostring(surf, "RGBA", 0)
+        image = pygame.image.tostring(surf, "RGBA", 1)
         # Obentego las dimensiones de la imagen
         ix, iy = surf.get_rect().size
         # Creo una textura vacia en memoria de video, y me quedo con el identificador (texid) para poder referenciarla
