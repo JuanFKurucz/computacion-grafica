@@ -70,11 +70,11 @@ def main():
                     models["knight"].do_action("crouch")
                 if event.key == pygame.K_f:
                     models["knight"].do_action("attack")
-                if event.key == pygame.K_h:
+                if event.key == pygame.K_1:
                     models["knight"].do_action("salute")
-                if event.key == pygame.K_c:
+                if event.key == pygame.K_2:
                     models["knight"].do_action("wave")
-                if event.key == pygame.K_p:
+                if event.key == pygame.K_3:
                     models["knight"].do_action("point")
 
                 elif event.key == pygame.K_ESCAPE:
