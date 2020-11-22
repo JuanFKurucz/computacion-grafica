@@ -26,7 +26,7 @@
   "models": {
     "knight": {
       "assets": "assets/models/knight",
-      "texture": "knight.png",
+      "texture": "knight_good.png",
       "animations": {
         "attack": { "frames": 16 },
         "crouch": { "frames": 16 },
