@@ -14,12 +14,12 @@ def init():
 
     # Activo el manejo de texturas
     glEnable(GL_TEXTURE_2D)
+    glActiveTexture(GL_TEXTURE0)
 
     load_materials()
     load_lighting()
 
     glShadeModel(GL_SMOOTH)  # shaders
-    glActiveTexture(GL_TEXTURE0)
     glEnable(GL_DEPTH_TEST)  # Z-Buffer
     glEnable(GL_CULL_FACE)  # Backface Culling
     glEnable(GL_LIGHTING)
@@ -38,7 +38,8 @@ def main():
     ang = 0.0
     end = False
 
-    models["knight"].attach_model(models["weapon_k"])
+    if "weapon_k" in models:
+        models["knight"].attach_model(models["weapon_k"])
     while not end:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

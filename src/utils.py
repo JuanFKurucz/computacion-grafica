@@ -83,6 +83,7 @@ def load_models(gouraud=None):
             instances = data["models"][model_info].get("instances")
             if not instances:
                 instances = 1
+            texture_id = None
             for i in range(instances):
                 model_name = f"{model_info}_{i}" if instances > 1 else model_info
                 position = data["models"][model_info].get("position", [0, 0, 0])
@@ -127,7 +128,18 @@ def load_models(gouraud=None):
                         sound,
                         data["models"][model_info].get("back", False),
                     )
-                model.load(data["models"][model_info]["default_animation"], gouraud=gouraud)
+                if model_info == "knight":
+                    model.load(
+                        data["models"][model_info]["default_animation"],
+                        gouraud=gouraud,
+                        texture_id=texture_id,
+                    )
+                else:
+                    model.load(
+                        data["models"][model_info]["default_animation"], texture_id=texture_id
+                    )
+                texture_id = model.texture
+
                 models[model_name] = model
     return models
 

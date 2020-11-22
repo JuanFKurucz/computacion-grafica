@@ -51,7 +51,8 @@ class Object:
         for pair in obj.poligons:
             vert = pair[0]
             normal = pair[1]
-            textura = pair[2]
+            if len(pair) > 2:
+                textura = pair[2]
             if len(obj._normals) > 0:
                 for n in obj._normals[normal]:
                     obj.normals.append(n)

@@ -87,10 +87,13 @@ class Model:
             animation.load_animations(self.assets_folder, prefix)
             self.add_animation(prefix, animation)
 
-    def load(self, default_animation, gouraud=None):
+    def load(self, default_animation, gouraud=None, texture_id=None):
         self.default_animation = default_animation
         self.load_animations()
-        self.load_texture(f"{self.assets_folder}/{self.texture_path}", gouraud=gouraud)
+        if texture_id:
+            self.texture = texture_id
+        else:
+            self.load_texture(f"{self.assets_folder}/{self.texture_path}", gouraud=gouraud)
         self.current_animation = self.animations[self.default_animation]
 
     def change_animation(self, animation_type=None):
@@ -108,7 +111,6 @@ class Model:
 
         if self.current_sound:
             self.current_sound.start()
-        # if past_sound and (not self.current_sound or (past_sound.name != self.current_sound.name)):
         self.current_animation.start_time = time()
 
     def draw(self, light=False, angle=0):
@@ -136,10 +138,12 @@ class Model:
         if current_obj.textures:
             glEnableClientState(GL_TEXTURE_COORD_ARRAY)
             glTexCoordPointer(2, GL_FLOAT, 0, current_obj.textures)
+            if self.unifTextura is not None:
+                try:
+                    glUniform1i(self.unifTextura, 0)
+                except:
+                    print("Error loading unifTexture")
             glBindTexture(GL_TEXTURE_2D, self.texture)
-
-            if self.unifTextura:
-                glUniform1ui(self.unifTextura, 0)
 
         glDrawArrays(GL_TRIANGLES, 0, len(current_obj.poligons))
 
@@ -150,11 +154,10 @@ class Model:
             glDisableClientState(GL_NORMAL_ARRAY)
 
         if current_obj.textures:
-            glDisableClientState(GL_TEXTURE_COORD_ARRAY)
             glBindTexture(GL_TEXTURE_2D, 0)
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY)
 
     def load_texture(self, path, gouraud=None):
-
         # Cargo la imagen a memoria. pygame se hace cargo de decodificarla correctamente
         surf = pygame.image.load(path)
         # Obtengo la matriz de colores de la imagen en forma de un array binario
@@ -187,4 +190,5 @@ class Model:
         # devuelvo el identificador de la textura para que pueda ser usada mas adelante
         self.texture = texid
         if gouraud:
-            self.unifTextura = glGetUniformLocation(gouraud, path)
+            self.unifTextura = glGetUniformLocation(gouraud, "textura")
+
